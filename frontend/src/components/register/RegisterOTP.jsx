@@ -11,42 +11,37 @@ import axiosInstance from "../../axios/Axios";
 import { useNavigate } from "react-router-dom";
 
 const RegisterOTP = () => {
+  const navigate = useNavigate();
+  const [OTP, setOTP] = useState(null);
+  const otpDetails = localStorage.getItem("OTPDetails");
 
-    const navigate = useNavigate()
-    const [OTP, setOTP] = useState(null);
-    const otpDetails = localStorage.getItem("OTPDetails")
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
+    const parseData = JSON.parse(otpDetails);
 
-    const handleSubmit = (e)=>{
-        e.preventDefault();
+    console.log(parseData);
 
-        const parseData = JSON.parse(otpDetails)
-
-        console.log(parseData);
-
-        if (OTP === parseData.otp){
-            const values = {
-                otp:parseData.otp,
-                email:parseData.email
-            }
-            axiosInstance.post('confirm-otp/',values)
-            .then((response)=>{
-                if (response.data.message === "Success"){
-                    localStorage.removeItem("OTPDetails")
-                    navigate('../login')
-                }
-            })
-            console.log("success");
-        }else{
-            console.log("failed");
+    if (OTP === parseData.otp) {
+      const values = {
+        otp: parseData.otp,
+        email: parseData.email,
+      };
+      axiosInstance.post("confirm-otp/", values).then((response) => {
+        if (response.data.message === "Success") {
+          localStorage.removeItem("OTPDetails");
+          navigate("../login");
         }
+      });
+      console.log("success");
+    } else {
+      console.log("failed");
     }
-
-
+  };
 
   return (
     <div>
-        <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <Box
           sx={{
             width: "100%",
@@ -84,13 +79,12 @@ const RegisterOTP = () => {
                   Submit OTP
                 </Button>
               </CardActions>
-
             </CardContent>
           </Card>
         </Box>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default RegisterOTP
+export default RegisterOTP;

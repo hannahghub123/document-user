@@ -11,26 +11,23 @@ import axiosInstance from "../../axios/Axios";
 import Navbar from "../navbar/Navbar";
 
 const EmailEnter = () => {
+  const [email, setEmail] = useState("");
 
-    const [email,setEmail] = useState('')
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    const handleSubmit = (e)=>{
+    const values = {
+      email: email,
+    };
 
-        e.preventDefault()
+    localStorage.setItem("EmailDetails", JSON.stringify(values));
 
-        const values = {
-            email:email,
-        }
-
-        localStorage.setItem("EmailDetails",JSON.stringify(values))
-
-        axiosInstance.post('reset-password/',values)
-
-    }
+    axiosInstance.post("reset-password/", values);
+  };
 
   return (
     <div>
-      <Navbar/>
+      <Navbar />
       <form onSubmit={handleSubmit}>
         <Box
           sx={{
@@ -65,8 +62,8 @@ const EmailEnter = () => {
 
               <Divider />
               <CardActions>
-                <Button variant="contained" color="primary" type="submit">
-                  Send OTP
+                <Button variant="contained" type="submit">
+                  Click Here to Send OTP
                 </Button>
               </CardActions>
             </CardContent>

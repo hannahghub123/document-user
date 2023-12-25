@@ -9,7 +9,6 @@ import Divider from "@mui/joy/Divider";
 import Typography from "@mui/joy/Typography";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../axios/Axios";
-import { useDispatch } from "react-redux";
 import Navbar from "../navbar/Navbar";
 
 const Register = () => {
@@ -31,19 +30,17 @@ const Register = () => {
         password2,
       });
 
-      console.log(response.data,"//////??hi");
+      console.log(response.data, "//////??hi");
       if (response.data.message === "User registered successfully") {
-
         const responseOtp = response.data.OTP;
         const responseEmail = response.data.email;
 
-        const values ={
+        const values = {
           otp: responseOtp,
-          email : responseEmail
-        }
+          email: responseEmail,
+        };
 
-        localStorage.setItem("OTPDetails",JSON.stringify(values))
-
+        localStorage.setItem("OTPDetails", JSON.stringify(values));
 
         navigate("../otp-register/");
       }
@@ -57,7 +54,7 @@ const Register = () => {
   };
   return (
     <div>
-      <Navbar/>
+      <Navbar />
       <form onSubmit={handleSubmit}>
         <Box
           sx={{
@@ -112,11 +109,13 @@ const Register = () => {
               />
               <Divider />
               <CardActions>
-                <Button  color="primary" type="submit">
+                <Button color="primary" type="submit">
                   Submit Form
                 </Button>
               </CardActions>
-              <Button variant="contained" onClick={loginHandle}>Already a User?</Button>
+              <Button variant="contained" onClick={loginHandle}>
+                Already a User?
+              </Button>
             </CardContent>
           </Card>
         </Box>

@@ -3,7 +3,6 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { styled } from "@mui/joy/styles";
 import Grid from "@mui/joy/Grid";
 import Sheet from "@mui/joy/Sheet";
-import { useNavigate } from 'react-router-dom'
 import Navbar from "../navbar/Navbar";
 
 const Item = styled(Sheet)(({ theme }) => ({
@@ -17,14 +16,8 @@ const Item = styled(Sheet)(({ theme }) => ({
 }));
 
 const Documents = () => {
-  const navigate = useNavigate()
-
   const [ws, setWs] = useState(null);
   const [documents, setDocuments] = useState([]);
-
-  const coverpageHandle=()=>{
-    navigate('../')
-  }
 
   useEffect(() => {
     const socket = new W3CWebSocket("ws://localhost:8000/ws/documents/");
@@ -32,21 +25,16 @@ const Documents = () => {
     socket.onopen = () => {
       console.log("WebSocket connected");
 
-        socket.send(JSON.stringify({ action: 'get_all_documents' }));
-
+      socket.send(JSON.stringify({ action: "get_all_documents" }));
     };
-
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log(data,"data here in main documents############");
 
-        if (data.action === 'all_documents_fetched') {
-          const value = data.documents
-          console.log(value,"value here in main documents############");
-          setDocuments(value);
-        }
-
+      if (data.action === "all_documents_fetched") {
+        const value = data.documents;
+        setDocuments(value);
+      }
     };
 
     socket.onclose = () => {
@@ -58,13 +46,12 @@ const Documents = () => {
     // No return cleanup function is needed here
   }, []); // Empty dependency array ensures the effect runs once after the initial render
 
-
   return (
     <div>
-      <Navbar/>
-      <h1>Documents</h1>
-      <button onClick={coverpageHandle}>Cover page</button>
-
+      <Navbar />
+      <h1 style={{ textAlign: "center" }} className="mt-4 mb-2">
+        <b>All Documents</b>
+      </h1>
       <div className="container">
         <Grid
           container
@@ -78,21 +65,11 @@ const Documents = () => {
                 <Item>
                   <div className="d-flex flex-row justify-content-between ">
                     <div className="notes-text">
-                      {item.title}
+                      <h5>User Id - {item.user}</h5>
+                      <b>Title - {item.title}</b>
                       <br />
                       hii
                       {item.content}
-                    </div>
-
-                    <div className="icon-container">
-                      {/* <span className='ml-4 ' onClick={()=>documentEditHandle(item._id)}><i className="fas fa-edit icon"></i></span>  */}
-
-                      {/* <span
-                        className="ml-1 "
-                        onClick={() => DeleteHandle(item._id)}
-                      >
-                        <i className="fas fa-trash icon"></i>
-                      </span> */}
                     </div>
                   </div>
                 </Item>
@@ -101,7 +78,7 @@ const Documents = () => {
         </Grid>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Documents
+export default Documents;

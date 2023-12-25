@@ -12,6 +12,7 @@ import EditDocumentModal from "./EditDocumentModal";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axios/Axios";
 import Navbar from "../../navbar/Navbar";
+import { Button } from "@mui/material";
 
 const Item = styled(Sheet)(({ theme }) => ({
   backgroundColor:
@@ -32,6 +33,8 @@ const MyDocuments = () => {
   const [getDocuments, setGetDocuments] = useState([]);
   const [name, setName] = useState("");
   const [render, setRender] = useState(false);
+  const [addRender, setAddRender] = useState(false);
+  const [deleteRender, setDeleteRender] = useState(false);
 
   useEffect(() => {
     const userData = localStorage.getItem("userDetails");
@@ -50,7 +53,7 @@ const MyDocuments = () => {
           console.log(error);
         });
     }
-  }, [render]);
+  }, [render, addRender, deleteRender]);
 
   useEffect(() => {
     const socket = new W3CWebSocket("ws://localhost:8000/ws/documents/");
@@ -87,7 +90,8 @@ const MyDocuments = () => {
         setMyDocuments(value);
       }
 
-      if (data.action === "documents_deleted") {
+      if (data.message === "documents_deleted") {
+        console.log("inside action delete");
         toast.success("Document Deleted !!", {
           position: toast.POSITION.TOP_CENTER,
           autoClose: 3000,
@@ -95,6 +99,7 @@ const MyDocuments = () => {
         const value = data.documents;
         console.log(value, "value here in mydocuments");
         setMyDocuments(value);
+        setDeleteRender(!deleteRender);
       }
     };
 
@@ -124,12 +129,14 @@ const MyDocuments = () => {
     toast.info(
       <div>
         <p>Are you sure you want to delete this document ?</p>
-        <button className="ml-5 mr-5" onClick={() => deleteDocument(id)}>
-          Delete
-        </button>
-        <button className="ml-3" onClick={toast.dismiss}>
-          Cancel
-        </button>
+        <div style={{ display: "flex", justifyContent: "space-around" }}>
+          <Button variant="contained" onClick={() => deleteDocument(id)}>
+            Delete
+          </Button>
+          <Button variant="contained" onClick={toast.dismiss}>
+            Cancel
+          </Button>
+        </div>
       </div>,
       {
         position: "top-center",
@@ -150,71 +157,77 @@ const MyDocuments = () => {
   };
 
   return (
-    <div>
+    <>
       <Navbar />
-      <h1 style={{ textAlign: "center" }}>{name}'s - My Documents</h1>
+      <div style={{ marginTop: "10px" }}>
+        <h1 style={{ textAlign: "center" }} className="mt-4 mb-2">
+          <b>{name}'s - My Documents</b>
+        </h1>
 
-      <div className="notes">
-        <h5>Add Notes</h5>
-        <span onClick={openAddModal}>
-          <i class="fa fa-plus icon" aria-hidden="true"></i>
-        </span>
-      </div>
-      <div className="container">
-        <Grid
-          container
-          rowSpacing={1}
-          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-          sx={{ width: "100%" }}
-        >
-          {getDocuments &&
-            getDocuments.map((item) => (
-              <Grid xs={6}>
-                <Item>
-                  <div className="d-flex flex-row justify-content-between ">
-                    <div className="notes-text">
-                      {item.title}
-                      <br />
-                      hii
-                      {item.content}
+        <div className="notes">
+          <h4>
+            <b>ADD NOTES</b>
+          </h4>
+          <span onClick={openAddModal}>
+            <i class="fa fa-plus icon" aria-hidden="true"></i>
+          </span>
+        </div>
+        <div className="container">
+          <Grid
+            container
+            rowSpacing={1}
+            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+            sx={{ width: "100%" }}
+          >
+            {getDocuments &&
+              getDocuments.map((item) => (
+                <Grid xs={6}>
+                  <Item>
+                    <div className="d-flex flex-row justify-content-between ">
+                      <div className="notes-text">
+                        <b>Title - {item.title}</b>
+                        <br />
+                        {item.content}
+                      </div>
+
+                      <div className="icon-container">
+                        <span
+                          className="ml-4 "
+                          onClick={() => documentEditHandle(item._id)}
+                        >
+                          <i className="fas fa-edit icon"></i>
+                        </span>
+
+                        <span
+                          className="ml-1 "
+                          onClick={() => DeleteHandle(item._id)}
+                        >
+                          <i className="fas fa-trash icon"></i>
+                        </span>
+                      </div>
                     </div>
+                  </Item>
+                </Grid>
+              ))}
+          </Grid>
+        </div>
 
-                    <div className="icon-container">
-                      <span
-                        className="ml-4 "
-                        onClick={() => documentEditHandle(item._id)}
-                      >
-                        <i className="fas fa-edit icon"></i>
-                      </span>
-
-                      <span
-                        className="ml-1 "
-                        onClick={() => DeleteHandle(item._id)}
-                      >
-                        <i className="fas fa-trash icon"></i>
-                      </span>
-                    </div>
-                  </div>
-                </Item>
-              </Grid>
-            ))}
-        </Grid>
+        {showAddModal && (
+          <AddDocumentsModal
+            setShowAddModal={setShowAddModal}
+            setMyDocuments={setMyDocuments}
+            setAddRender={setAddRender}
+          />
+        )}
+        {editDocuments ? (
+          <EditDocumentModal
+            documentId={documentId}
+            setEditDocuments={setEditDocuments}
+            setRender={setRender}
+          />
+        ) : null}
       </div>
-
-      {showAddModal && (
-        <AddDocumentsModal
-          setShowAddModal={setShowAddModal}
-          setMyDocuments={setMyDocuments}
-        />
-      )}
-      {editDocuments ? (
-        <EditDocumentModal
-          documentId={documentId}
-          setEditDocuments={setEditDocuments}
-          setRender={setRender}
-        />
-      ) : null}
-    </div>
+    </>
   );
 };
 

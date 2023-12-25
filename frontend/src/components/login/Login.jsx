@@ -43,7 +43,6 @@ const Login = () => {
     }
   };
 
-
   const passwordHandle = () => {
     navigate("../email-enter");
   };

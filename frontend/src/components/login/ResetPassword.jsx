@@ -11,33 +11,31 @@ import axiosInstance from "../../axios/Axios";
 import { useNavigate } from "react-router-dom";
 
 const ResetPassword = () => {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate()
+  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
 
-    const [password, setPassword] = useState('')
-    const [newPassword, setNewPassword] = useState('')
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    const handleSubmit =(e)=>{
-        e.preventDefault()
+    const emailDetails = localStorage.getItem("EmailDetails");
+    const parseData = JSON.parse(emailDetails);
+    if (password === newPassword) {
+      const values = {
+        email: parseData.email,
+        password: password,
+      };
 
-        const emailDetails = localStorage.getItem("EmailDetails")
-        const parseData = JSON.parse(emailDetails)
-        if(password===newPassword){
-            const values = {
-                email:parseData.email,
-                password:password
-            }
-
-            axiosInstance.post('set-password/',values)
-            .then((res)=>{
-                console.log(res.data);
-                if(res.data.message === "success"){
-                    localStorage.removeItem('EmailDetails')
-                    navigate('../login')
-                }
-            })
+      axiosInstance.post("set-password/", values).then((res) => {
+        console.log(res.data);
+        if (res.data.message === "success") {
+          localStorage.removeItem("EmailDetails");
+          navigate("../login");
         }
+      });
     }
+  };
 
   return (
     <div>

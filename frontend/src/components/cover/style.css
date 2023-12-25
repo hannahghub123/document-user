@@ -1,0 +1,16 @@
+.cover-container {
+    text-align: center;
+  }
+  
+  .cover-image {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    margin: 0 auto;
+  }
+  
+  .cover-title {
+    text-align: center;
+  }
+  
+  

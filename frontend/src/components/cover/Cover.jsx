@@ -1,27 +1,25 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import Navbar from '../navbar/Navbar'
+import React from "react";
+import Navbar from "../navbar/Navbar";
+import "./style.css";
 
 const Cover = () => {
-    const navigate = useNavigate()
-    const signupHandle=()=>{
-        navigate('../register')
-    }
-    const loginHandle=()=>{
-        navigate('../login')
-    }
-    const documentsHandle=()=>{
-        navigate('../documents')
-    }
   return (
     <div>
-        <Navbar/>
-        <h1>Coverrr paggeeee</h1>
-        <button onClick={signupHandle}>Register</button>
-        <button onClick={loginHandle}>Login</button>
-        <button onClick={documentsHandle}>Documents</button>
+      <Navbar />
+      <br />
+      <br />
+      <div className="cover-container">
+        <h1 className="cover-title">
+          <b>Welcome</b>
+        </h1>
+        <img
+          src="https://images.squarespace-cdn.com/content/v1/5fce63270356d927d7eecdbd/033e9988-2ac8-4cb9-8b9f-5bf05fb22dcb/gff.jpg"
+          alt=""
+          className="cover-image"
+        />
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Cover
+export default Cover;
